@@ -1,9 +1,33 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { AuthContext } from '../providers/AuthProvider'
+import axios from "axios"
 
 const AddJob = () => {
   const [startDate, setStartDate] = useState(new Date())
+  const { user } = useContext(AuthContext);
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const form = e.target;
+    const title = form.job_title.value;  
+    const buyer = {
+      buyerEmail: form.email.value,
+      buyerDisplayName: user?.displayName,
+      buyerPhotoURL: user?.photoURL,
+    }; 
+    const deadline = startDate;  
+    const category = form.category.value;  
+    const min_price = Number(form.min_price.value);  
+    const max_price = Number(form.max_price.value);  
+    const description = form.description.value;
+    const formData = {title,buyer,deadline,category,min_price,max_price,description}
+    
+    // make a post
+    const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/add-job`,formData)
+    console.log(data)
+  }
 
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)] my-12'>
@@ -12,7 +36,7 @@ const AddJob = () => {
           Post a Job
         </h2>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className='grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2'>
             <div>
               <label className='text-gray-700 ' htmlFor='job_title'>
@@ -34,6 +58,8 @@ const AddJob = () => {
                 id='emailAddress'
                 type='email'
                 name='email'
+                defaultValue={user.email}
+                disabled={true}
                 className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring'
               />
             </div>
