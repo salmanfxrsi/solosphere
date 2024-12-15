@@ -26,13 +26,21 @@ const jobsCollection = client.db('jobsDB').collection('jobs')
 async function run() {
   try {
 
-    // get job
+    // get all jobs from db
     app.get('/jobs', async(req,res)=>{
       const result = await jobsCollection.find().toArray();
       res.send(result)
     })
 
-    // post job 
+    // get jobs for specific user by email
+    app.get('/jobs/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { 'buyer.buyerEmail': email };
+      const result = await jobsCollection.find(query).toArray();
+      res.send(result);
+    })
+
+    // post job to db 
     app.post('/add-job', async(req,res)=>{
       const jobData = req.body;
       const result = await jobsCollection.insertOne(jobData);
