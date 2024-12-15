@@ -26,6 +26,12 @@ const jobsCollection = client.db('jobsDB').collection('jobs')
 async function run() {
   try {
 
+    // get job
+    app.get('/jobs', async(req,res)=>{
+      const result = await jobsCollection.find().toArray();
+      res.send(result)
+    })
+
     // post job 
     app.post('/add-job', async(req,res)=>{
       const jobData = req.body;
