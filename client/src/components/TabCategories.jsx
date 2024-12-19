@@ -7,7 +7,6 @@ import axios from "axios"
 
 const TabCategories = () => {
   const [jobs,setJobs] = useState([])
-  console.log(jobs)  
 
   useEffect(()=>{
     fetchAllJobs();

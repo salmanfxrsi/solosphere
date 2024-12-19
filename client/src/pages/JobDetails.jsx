@@ -21,8 +21,8 @@ const JobDetails = () => {
 
   useEffect(() => {
     fetchSingleJob();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [job]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // fetch single job by id
   const fetchSingleJob = async () => {
@@ -59,14 +59,14 @@ const JobDetails = () => {
           <div className="flex items-center gap-5">
             <div>
               <p className="mt-2 text-sm  text-gray-600 ">
-                Name: {buyer?.buyerDisplayName}
+                Name: {buyer?.name}
               </p>
               <p className="mt-2 text-sm  text-gray-600 ">
-                Email: {buyer?.buyerEmail}
+                Email: {buyer?.email}
               </p>
             </div>
             <div className="rounded-full object-cover overflow-hidden w-14 h-14">
-              <img src={buyer?.buyerPhotoURL} alt="" />
+              <img src={buyer?.photo} alt="" />
             </div>
           </div>
           <p className="mt-6 text-lg font-bold text-gray-600 ">
