@@ -73,6 +73,11 @@ async function run() {
     // place a bid on a job
     app.post("/add-bid", async (req, res) => {
       const bidData = req.body;
+      const query = { _id: new ObjectId(bidData.jobId) }
+      const update = {
+        $inc: { bid_count: 1 }
+      }
+      const increaseBidCount = await jobsCollection.updateOne(query,update)
       const result = await bidsCollection.insertOne(bidData);
       res.send(result);
     });

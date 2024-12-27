@@ -135,8 +135,8 @@ const BidRequests = () => {
                         </div>
                       </td>
                       <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                        <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-yellow-100/60 text-yellow-500">
-                          <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                        <div className={`${request.action === "Completed" ? 'bg-green-100/60 text-green-500' : 'bg-yellow-100/60 text-yellow-500'} inline-flex items-center px-3 py-1 rounded-full gap-x-2`}>
+                          <span className={`${request.action === "Completed" ? 'bg-green-500' : 'bg-yellow-500'} h-1.5 w-1.5 rounded-full`}></span>
                           <h2 className="text-sm font-normal ">
                             {request?.action}
                           </h2>

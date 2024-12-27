@@ -9,31 +9,31 @@ const MyBids = () => {
   const [bids, setBids] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
-  const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
-    // 0. Fetch specific data by user email and set it to bids state
-    const fetchBids = async () => {
-      try {
-        const { data } = await axios.get(
-          `${import.meta.env.VITE_API_URL}/bids/${user?.email}`
-        );
-        setBids(data);
-        setLoading(false);
-      } catch (error) {
-        toast.error(error.message);
-      }
-    };
     fetchBids();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // mark bids as a complete
+  // Fetch specific data by user email and set it to bids state
+  const fetchBids = async () => {
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/bids/${user?.email}`
+      );
+      setBids(data);
+      setLoading(false);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // Mark bids as a complete
   const handleMarkComplete = async (id) => {
     try {
-      axios.patch(`${import.meta.env.VITE_API_URL}/update-action/${id}`);
+      await axios.patch(`${import.meta.env.VITE_API_URL}/update-action/${id}`);
       toast.success("Congo Task Completed");
-      setIsCompleted(true);
+      fetchBids();
     } catch (error) {
       toast.error(error.message);
     }
@@ -158,11 +158,10 @@ const MyBids = () => {
                       <td className="px-4 py-4 text-sm whitespace-nowrap">
                         <button
                           onClick={() => handleMarkComplete(bid?._id)}
+                          disabled={bid?.action === "Completed"}
                           title="Mark Complete"
                           className={`${
-                            bid?.action === "Completed" || isCompleted
-                              ? "text-red-500"
-                              : ""
+                            bid?.action === "Completed" ? "text-red-500" : ""
                           } text-gray-500 transition-colors duration-200 focus:outline-none disabled:cursor-not-allowed`}
                         >
                           <svg
