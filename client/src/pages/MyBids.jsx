@@ -24,6 +24,7 @@ const MyBids = () => {
       }
     };
     fetchBids();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // show loading while data is fetching
