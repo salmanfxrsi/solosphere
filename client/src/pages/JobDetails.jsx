@@ -44,8 +44,8 @@ const JobDetails = () => {
     const price = Number(form.price.value);
     const email = user?.email;
     const comment = form.comment.value;
-    const deadline = startDate;
-    const bidData = { price, email, comment, deadline, jobId: _id };
+    const offered_date = startDate;
+    const bidData = { price, email, comment, jobId: _id, offered_date, status:"Pending", deadline, title, description, category, max_price, min_price, buyer, action:"Pending" };
 
     // 0. Price within maximum price range validation
     if (price > max_price)
@@ -55,7 +55,7 @@ const JobDetails = () => {
       await axios.post(`${import.meta.env.VITE_API_URL}/add-bid`, bidData);
       toast.success("Bid Placed");
       e.target.reset();
-      navigate("/bid-requests");
+      navigate("/my-bids");
     } catch (error) {
       toast.error(error.message);
     }

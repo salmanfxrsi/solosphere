@@ -47,6 +47,14 @@ async function run() {
       res.send(result);
     });
 
+    // get bids for specific user from db
+    app.get("/bids/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const result = await bidsCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // post job to db
     app.post("/add-job", async (req, res) => {
       const jobData = req.body;
@@ -55,11 +63,11 @@ async function run() {
     });
 
     // place a bid on a job
-    app.post("/add-bid", async(req,res)=>{
+    app.post("/add-bid", async (req, res) => {
       const bidData = req.body;
       const result = await bidsCollection.insertOne(bidData);
-      res.send(result)
-    })
+      res.send(result);
+    });
 
     app.put("/update-job/:id", async (req, res) => {
       const id = req.params.id;
