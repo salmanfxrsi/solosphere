@@ -21,6 +21,7 @@ const client = new MongoClient(uri, {
 });
 
 const jobsCollection = client.db("jobsDB").collection("jobs");
+const bidsCollection = client.db("jobsDB").collection("bids");
 
 async function run() {
   try {
@@ -52,6 +53,13 @@ async function run() {
       const result = await jobsCollection.insertOne(jobData);
       res.send(result);
     });
+
+    // place a bid on a job
+    app.post("/add-bid", async(req,res)=>{
+      const bidData = req.body;
+      const result = await bidsCollection.insertOne(bidData);
+      res.send(result)
+    })
 
     app.put("/update-job/:id", async (req, res) => {
       const id = req.params.id;

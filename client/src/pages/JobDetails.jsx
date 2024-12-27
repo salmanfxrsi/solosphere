@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { format } from "date-fns";
+import toast from "react-hot-toast";
+import { AuthContext } from "../providers/AuthProvider";
 
 const JobDetails = () => {
   const { id } = useParams();
+  const { user } = useContext(AuthContext);
   const [startDate, setStartDate] = useState(new Date());
   const [job, setJob] = useState({});
   const {
@@ -30,6 +33,28 @@ const JobDetails = () => {
       `${import.meta.env.VITE_API_URL}/job/${id}`
     );
     setJob(data);
+  };
+
+  // handle form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const price = form.price.value;
+    const email = user?.email;
+    const comment = form.comment.value;
+    const deadline = startDate;
+    const bidData = { price, email, comment, deadline };
+
+    // 0. Price within maximum price range validation
+    if (price > max_price)
+      return toast.error(`Offer Less Than ${max_price + 1}`);
+
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/add-bid`, bidData)
+      toast.success('Bid Placed')
+    } catch (error) {
+      toast.error(error.message)
+    }
   };
 
   return (
@@ -80,7 +105,7 @@ const JobDetails = () => {
           Place A Bid
         </h2>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
             <div>
               <label className="text-gray-700 " htmlFor="price">
@@ -103,6 +128,7 @@ const JobDetails = () => {
                 id="emailAddress"
                 type="email"
                 name="email"
+                value={user?.email}
                 disabled
                 className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md   focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring"
               />

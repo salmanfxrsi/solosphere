@@ -16,6 +16,7 @@ const UpdateJob = () => {
 
   useEffect(() => {
     getSingleJobById();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getSingleJobById = async () => {

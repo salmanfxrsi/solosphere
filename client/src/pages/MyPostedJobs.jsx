@@ -12,6 +12,7 @@ const MyPostedJobs = () => {
 
   useEffect(() => {
     fetchSpecificUserPostedJob();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchSpecificUserPostedJob = async () => {
