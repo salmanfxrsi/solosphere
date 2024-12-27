@@ -27,7 +27,30 @@ async function run() {
   try {
     // get all jobs from db
     app.get("/jobs", async (req, res) => {
-      const result = await jobsCollection.find().toArray();
+      const category = req.query?.category;
+      const search = req.query?.search;
+      const sort = req.query.sort
+
+      let query = {};
+      let filter = {};
+
+      if (category) {
+        query = { category };
+      }
+
+      if (search) {
+        query.title = { $regex: search, $options: 'i' };
+      }
+      
+      if(sort == 'asc'){
+        filter = {deadline: 1}
+      }
+
+      if(sort == 'dsc'){
+        filter = {deadline: -1}
+      }
+
+      const result = await jobsCollection.find(query).sort(filter).toArray();
       res.send(result);
     });
 
@@ -73,11 +96,11 @@ async function run() {
     // place a bid on a job
     app.post("/add-bid", async (req, res) => {
       const bidData = req.body;
-      const query = { _id: new ObjectId(bidData.jobId) }
+      const query = { _id: new ObjectId(bidData.jobId) };
       const update = {
-        $inc: { bid_count: 1 }
-      }
-      const increaseBidCount = await jobsCollection.updateOne(query,update)
+        $inc: { bid_count: 1 },
+      };
+      const increaseBidCount = await jobsCollection.updateOne(query, update);
       const result = await bidsCollection.insertOne(bidData);
       res.send(result);
     });
