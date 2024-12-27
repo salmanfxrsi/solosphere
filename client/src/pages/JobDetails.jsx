@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
@@ -10,9 +10,11 @@ import { AuthContext } from "../providers/AuthProvider";
 const JobDetails = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [startDate, setStartDate] = useState(new Date());
   const [job, setJob] = useState({});
   const {
+    _id,
     deadline,
     title,
     description,
@@ -39,21 +41,23 @@ const JobDetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const price = form.price.value;
+    const price = Number(form.price.value);
     const email = user?.email;
     const comment = form.comment.value;
     const deadline = startDate;
-    const bidData = { price, email, comment, deadline };
+    const bidData = { price, email, comment, deadline, jobId: _id };
 
     // 0. Price within maximum price range validation
     if (price > max_price)
       return toast.error(`Offer Less Than ${max_price + 1}`);
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/add-bid`, bidData)
-      toast.success('Bid Placed')
+      await axios.post(`${import.meta.env.VITE_API_URL}/add-bid`, bidData);
+      toast.success("Bid Placed");
+      e.target.reset();
+      navigate("/bid-requests");
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
   };
 
@@ -113,7 +117,7 @@ const JobDetails = () => {
               </label>
               <input
                 id="price"
-                type="text"
+                type="number"
                 name="price"
                 required
                 className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md   focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring"
