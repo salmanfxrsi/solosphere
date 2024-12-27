@@ -77,6 +77,7 @@ async function run() {
       res.send(result);
     });
 
+    // update specific job by using job post id from db
     app.put("/update-job/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -86,6 +87,17 @@ async function run() {
       };
       const options = { upsert: true };
       const result = await jobsCollection.updateOne(query, updated, options);
+      res.send(result);
+    });
+
+    // update action of specific bided job from db
+    app.patch("/update-action/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const update = {
+        $set: { action: "Completed" },
+      };
+      const result = await bidsCollection.updateOne(query, update);
       res.send(result);
     });
 

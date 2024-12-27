@@ -9,6 +9,7 @@ const MyBids = () => {
   const [bids, setBids] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
     // 0. Fetch specific data by user email and set it to bids state
@@ -24,8 +25,19 @@ const MyBids = () => {
       }
     };
     fetchBids();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // mark bids as a complete
+  const handleMarkComplete = async (id) => {
+    try {
+      axios.patch(`${import.meta.env.VITE_API_URL}/update-action/${id}`);
+      toast.success("Congo Task Completed");
+      setIsCompleted(true);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   // show loading while data is fetching
   if (loading) return <LoadingSpinner />;
@@ -145,8 +157,13 @@ const MyBids = () => {
                       </td>
                       <td className="px-4 py-4 text-sm whitespace-nowrap">
                         <button
+                          onClick={() => handleMarkComplete(bid?._id)}
                           title="Mark Complete"
-                          className="text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none disabled:cursor-not-allowed"
+                          className={`${
+                            bid?.action === "Completed" || isCompleted
+                              ? "text-red-500"
+                              : ""
+                          } text-gray-500 transition-colors duration-200 focus:outline-none disabled:cursor-not-allowed`}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
